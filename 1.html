@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script type="module">
+        import lodash from './1.js'
+        //1.Object.create()
+        Object.prototype.mycreate = function(obj){
+            try {
+                if(!(obj instanceof Object))throw new Error('not Object')
+                console.log(1)//证明throw之后代码不会继续往下执行
+                let F = function(){}
+                F.prototype = obj
+                return new F()
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        // let o =1
+        // let obj1={}
+        // let obj2=Object.mycreate(o)
+        // console.log(obj2.__proto__ == obj1);
+
+        //2.instanceof
+        function myInstanceof(left,right){
+            if(typeof left != Object)return false
+            let proto = Object.getPrototypeOf(left)
+            let prototype=right.prototype
+            while(proto){
+                if(proto == prototype)return true
+                proto = Object.getPrototypeOf(proto)
+            }
+            return false
+        }
+        // console.log(1 instanceof Number)
+        // console.log(myInstanceof(1,Number))
+
+        //3.new
+        function myNew(constructor,...args){
+            const obj={}
+            obj.__proto__ = constructor.prototype
+            let res=constructor.apply(obj,args)
+            return res instanceof Object?res:obj
+        }
+
+        //4.防抖节流在1.js中
+        // window.onresize=lodash.debounce(function(event){
+        //     console.log(event)
+        //     console.log(2222)
+        // },100)
+
+        //5.判断类型
+        function getType(value){
+            if(value == null)return null+''
+            if(typeof value == 'object'){
+                let typeStr = Object.prototype.toString.call(value)
+                let type = typeStr.split(' ')[1].split('')
+                type.pop()
+                type=type.join('')
+                return type
+            }else{
+                return typeof value
+            }
+        }
+        console.log(getType('a'));
+
+        
+    </script>
+</body>
+</html>
